@@ -1,62 +1,83 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+## Configuração
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Como este projeto é apenas para apresentação, as configurações necessárias estão no arquivo `.env`, na raiz da pasta `api`.
 
-## About Laravel
+Altere qualquer configuração, caso necessário.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## Banco de dados
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+O banco de dados pode ser criar utilizando o Docker:
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+```bash
+docker run --name laravel_pg -e POSTGRES_PASSWORD=123456 -v ~/students_db:/var/lib/postgresql/data -p 5437:5432 -d postgres:alpine
+```
 
-## Learning Laravel
+Lembre-se de inicializar o container do BD sempre que for rodar a aplicação.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+Seguindo esse passo, as configurações do `.env` já estarão corretas. Caso contrário, altere no arquivo.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## Laravel
 
-## Laravel Sponsors
+Acesse a raiz da pasta `api` pelo terminal, e instale as dependências utilizando o comando:
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+```bash
+composer install
+```
+Ainda no terminal e com o banco de dados ativo, execute o comando abaixo para criar as tabelas no banco de dados:  
+```bash
+php artisan migrate
+```
 
-### Premium Partners
+Para inserir alguns dados falsos para testes nas tabelas:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/)**
-- **[OP.GG](https://op.gg)**
+```bash
+php artisan migrate:refresh --seed
+```
 
-## Contributing
+Inicie o back-end da aplicação:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```bash
+php artisan serve
+```
 
-## Code of Conduct
+Geralmente o endereço será: http://localhost:8000/
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
+[comment]: <> (### API's)
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+[comment]: <> (#### POST `http://localhost:8000/api/auth/login`)
 
-## License
+[comment]: <> (Cria o token JWT para autenticação.)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+[comment]: <> (Deve ser passado os seguintes parâmetros:)
+
+[comment]: <> (```json)
+
+[comment]: <> ({)
+
+[comment]: <> (    "email": "furlan@hotmail.com.br",)
+
+[comment]: <> (    "password": "123456")
+
+[comment]: <> (})
+
+[comment]: <> (```)
+
+[comment]: <> (#### POST `http://localhost:8000/api/auth/login`)
+
+[comment]: <> (Cria o token JWT para autenticação.)
+
+[comment]: <> (Deve ser passado os seguintes parâmetros:)
+
+[comment]: <> (```json)
+
+[comment]: <> ({)
+
+[comment]: <> (    "email": "furlan@hotmail.com.br",)
+
+[comment]: <> (    "password": "123456")
+
+[comment]: <> (})
+
+[comment]: <> (```)
+
