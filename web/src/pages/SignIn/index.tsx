@@ -1,6 +1,13 @@
-import React, { FormEvent } from 'react';
-import { Container, Col, Row, Form, Button } from 'react-bootstrap';
+import React, { useCallback, useRef } from 'react';
+import { useHistory } from 'react-router-dom';
+import { Container, Col, Row, Button, Alert } from 'react-bootstrap';
+import { FormHandles } from '@unform/core';
+import { Form as UnForm } from '@unform/web';
+import * as Yup from 'yup';
 import { useAuth } from '../../context/AuthContext';
+
+import Input from '../../components/Input';
+import getValidationErrors from '../../Utils/getValidationErrors';
 
 interface ISignInFormData {
   email: string;
@@ -9,44 +16,41 @@ interface ISignInFormData {
 
 const SignIn: React.FC = () => {
 
+  const formRef = useRef<FormHandles>(null);
+
   const { signIn } = useAuth();
+  const history = useHistory();
 
-  // const handleSubmit = useCallback(async (data: ISignInFormData) => {
-  //
-  //   console.log(signIn);
-  //   console.log(data);
-  //   console.log({
-  //     email: data.email,
-  //     password: data.password,
-  //   });
-  //
-  //   try {
-  //
-  //     await signIn({
-  //       email: data.email,
-  //       password: data.password,
-  //     });
-  //
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // }, [signIn]);
-
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<any> => {
-    e.preventDefault();
-    // @ts-ignore
-    const formData = new FormData(e.target);
-    // @ts-ignore
-    const formDataObj: ISignInFormData = Object.fromEntries(formData.entries());
-
+  const handleSubmit = useCallback(async (data: ISignInFormData) => {
     try {
-      await signIn(formDataObj);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+      formRef.current?.setErrors({});
 
+      const schema = Yup.object().shape({
+        email: Yup.string().required('E-mail obrigatório').email('Digite um e-mail válido'),
+        password: Yup.string().required('Senha obrigatória'),
+      });
+
+      await schema.validate(data, { abortEarly: false });
+
+      await signIn({
+        email: data.email,
+        password: data.password,
+      });
+
+      history.push('/dashboard');
+    } catch (e) {
+      if (e instanceof Yup.ValidationError) {
+        const errors = getValidationErrors(e);
+
+        formRef.current?.setErrors(errors);
+
+        return;
+      }
+
+      console.log(e);
+      return;
+    }
+  }, [signIn, history]);
 
   return (
     <Container>
@@ -54,23 +58,21 @@ const SignIn: React.FC = () => {
         <Col md={{ span: 6, offset: 3 }} className="mt-5">
           <h1>Students</h1>
           <p className="mb-4">Insira abaixo seu e-mail e senha para acessar a plataforma:</p>
-          <Form onSubmit={handleSubmit}>
+          <UnForm ref={formRef} onSubmit={handleSubmit}>
 
-            <Form.Group controlId="formBasicEmail">
-              <Form.Label>E-mail</Form.Label>
-              <Form.Control type="email" name="email" placeholder="Digite seu e-mail" required/>
-            </Form.Group>
+            <Alert variant="danger">
+              E-mail ou senha inválidos!
+            </Alert>
 
-            <Form.Group controlId="formBasicPassword">
-              <Form.Label>Senha</Form.Label>
-              <Form.Control type="password" name="password" placeholder="Digite sua senha" required/>
-            </Form.Group>
+            <Input name="email" title="E-mail" type="email" placeholder="Digite seu e-mail"/>
+
+            <Input name="password" title="Senha" type="password" placeholder="Digite sua senha"/>
 
             <Button variant="primary" type="submit">
               Entrar
             </Button>
 
-          </Form>
+          </UnForm>
         </Col>
       </Row>
     </Container>

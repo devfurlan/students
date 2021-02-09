@@ -1,19 +1,17 @@
 import React from 'react';
 
-import 'bootstrap/dist/css/bootstrap.min.css';
-
 import Header from '../../components/Header';
 import StudentsList from '../../components/StudentsList';
 import Title from '../../components/Title';
 
-function App() {
+const Dashboard: React.FC = () => {
   return (
     <>
       <Header/>
-      <Title/>
+      <Title name="Alunos" button={true}/>
       <StudentsList/>
     </>
   );
 }
 
-export default App;
+export default Dashboard;

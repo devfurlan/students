@@ -17,10 +17,7 @@ class StudentsController extends Controller
      */
     public function index()
     {
-        return [
-            'data' => Students::all(),
-            'count' => Students::count()
-        ];
+        return Students::all();
     }
 
     /**

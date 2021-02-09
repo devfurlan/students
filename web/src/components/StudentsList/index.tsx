@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Container, Table, Button } from 'react-bootstrap';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import api from '../../services/api';
@@ -33,9 +33,13 @@ const StudentsList: React.FC = () => {
   const [students, setStudents] = useState<IRepository[]>([]);
 
   useEffect(() => {
-    api.get('users').then((response) => {
+    api.get('students').then(response => {
       setStudents(response.data);
-    });
+    }).catch(console.log);
+  }, []);
+
+  const handleDelete = useCallback((id):any => {
+    api.delete(`students/${id}`).then(response => console.log(response));
   }, []);
 
   return (
@@ -56,8 +60,9 @@ const StudentsList: React.FC = () => {
             <td>{student.grade}</td>
             <td>{student.class}</td>
             <td className="text-center">
-              <Button variant="outline-primary" size="sm" className="mr-2"><FaEdit/> Editar</Button>
-              <Button variant="outline-danger" size="sm"><FaTrash/> Excluir</Button>
+              <Button href="/students/update" variant="outline-primary" size="sm"
+                      className="mr-2"><FaEdit/> Editar</Button>
+              <Button onClick={() => handleDelete(student.id)} variant="outline-danger" size="sm"><FaTrash/> Excluir</Button>
             </td>
           </tr>
         ))}

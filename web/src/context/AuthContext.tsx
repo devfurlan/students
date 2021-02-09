@@ -7,8 +7,13 @@ interface ISignInCredentials {
   password: string;
 }
 
+interface IUser {
+  id: number;
+  name: string;
+}
+
 interface IAuthContextData {
-  user: Object;
+  user: IUser;
 
   signIn(credentials: ISignInCredentials): Promise<void>;
 
@@ -17,7 +22,7 @@ interface IAuthContextData {
 
 interface IAuthState {
   token: string;
-  user: Object;
+  user: IUser;
 }
 
 const AuthContext = createContext<IAuthContextData>({} as IAuthContextData);
@@ -28,11 +33,12 @@ export const AuthProvider: React.FC = ({ children }) => {
     const user = localStorage.getItem('@StudentsApp:user');
 
     if (token && user) {
+      api.defaults.headers.authorization = `Bearer ${token}`;
+
       return { token, user: JSON.parse(user) };
     }
 
     return {} as IAuthState;
-
   });
 
   const signIn = useCallback(async ({ email, password }) => {
@@ -45,6 +51,8 @@ export const AuthProvider: React.FC = ({ children }) => {
 
     localStorage.setItem('@StudentsApp:token', token);
     localStorage.setItem('@StudentsApp:user', JSON.stringify(user));
+
+    api.defaults.headers.authorization = `Bearer ${token}`;
 
     setData({ token, user });
   }, []);

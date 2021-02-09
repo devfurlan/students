@@ -1,16 +1,19 @@
 import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import { BrowserRouter as Router } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 
-import SignIn from './pages/SignIn';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-function App() {
+import Routes from './routes';
+
+const App: React.FC = () => {
   return (
-    <AuthProvider>
-      <SignIn/>
-    </AuthProvider>
+    <Router>
+      <AuthProvider>
+        <Routes/>
+      </AuthProvider>
+    </Router>
   );
-}
+};
 
 export default App;

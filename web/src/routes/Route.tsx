@@ -12,11 +12,13 @@ const Route: React.FC<IRouteProps> = ({ isPrivate = false, component: Component,
 
   return (
     <ReactDOMRoute {...rest} render={() => {
-      return isPrivate === !!user ? (
-        <Component/>
-      ) : (
-        <Redirect to={{ pathname: isPrivate ? '/' : '/dashboard' }}/>
-      );
+      return isPrivate === !!user
+        ? (
+          <Component/>
+        )
+        : (
+          <Redirect to={{ pathname: isPrivate ? '/' : '/dashboard' }}/>
+        );
     }}/>
   );
 };
