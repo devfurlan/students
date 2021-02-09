@@ -6,7 +6,7 @@ interface IInputProps extends InputHTMLAttributes<HTMLInputElement> {
   name: string;
 }
 
-const Input: React.FC<IInputProps> = ({ name, title, type, placeholder }) => {
+const Input: React.FC<IInputProps> = ({ name, title, type, placeholder, min, max }) => {
   const inputRef = useRef(null);
 
   const { fieldName, defaultValue, error, registerField } = useField(name);
@@ -22,7 +22,13 @@ const Input: React.FC<IInputProps> = ({ name, title, type, placeholder }) => {
   return (
     <Form.Group controlId={name}>
       <Form.Label>{title}</Form.Label>
-      <Form.Control defaultValue={defaultValue} ref={inputRef} type={type} placeholder={placeholder} isInvalid={!!error}/>
+      <Form.Control defaultValue={defaultValue}
+                    ref={inputRef}
+                    type={type}
+                    placeholder={placeholder}
+                    min={min}
+                    max={max}
+                    isInvalid={!!error}/>
       <Form.Control.Feedback type="invalid">
         {error}
       </Form.Control.Feedback>

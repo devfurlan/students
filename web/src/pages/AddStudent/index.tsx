@@ -4,23 +4,28 @@ import { Breadcrumb, Button, Col, Container, Row } from 'react-bootstrap';
 import Header from '../../components/Header';
 import Title from '../../components/Title';
 import { Form as UnForm } from '@unform/web';
-import Input from '../../components/Input';
+import Input from '../../components/Form/Input';
+import Select from '../../components/Form/Select';
 import { FormHandles } from '@unform/core';
-import { useAuth } from '../../context/AuthContext';
 import { useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 import getValidationErrors from '../../Utils/getValidationErrors';
+import api from '../../services/api';
 
 interface ISignInFormData {
+  name: string;
+  cpf: string;
   email: string;
-  password: string;
+  birth: Date;
+  gender: string;
+  grade: string;
+  class: string;
 }
 
 const AddStudent: React.FC = () => {
 
   const formRef = useRef<FormHandles>(null);
 
-  const { signIn } = useAuth();
   const history = useHistory();
 
   const handleSubmit = useCallback(async (data: ISignInFormData) => {
@@ -28,15 +33,25 @@ const AddStudent: React.FC = () => {
       formRef.current?.setErrors({});
 
       const schema = Yup.object().shape({
+        name: Yup.string().min(2, 'Nome obrigatório'),
+        cpf: Yup.string().max(11).min(11, 'Formato inválido'),
         email: Yup.string().required('E-mail obrigatório').email('Digite um e-mail válido'),
-        password: Yup.string().required('Senha obrigatória'),
+        birth: Yup.date().required('Data de nascimento obrigatória'),
+        gender: Yup.string().required('Gênero obrigatório'),
+        grade: Yup.string().required('Série/Ano obrigatório'),
+        class: Yup.string().required('Turma obrigatória'),
       });
 
       await schema.validate(data, { abortEarly: false });
 
-      await signIn({
+      await api.post('/students',{
+        name: data.name,
+        cpf: data.cpf,
         email: data.email,
-        password: data.password,
+        birth: data.birth,
+        gender: data.gender,
+        grade: data.grade,
+        class: data.class,
       });
 
       history.push('/dashboard');
@@ -52,9 +67,7 @@ const AddStudent: React.FC = () => {
       console.log(e);
       return;
     }
-  }, [signIn, history]);
-
-
+  }, [history]);
 
   return (
     <>
@@ -76,13 +89,21 @@ const AddStudent: React.FC = () => {
 
               <Input name="name" title="Nome" type="text" placeholder="Digite seu nome"/>
 
-              <Input name="cpf" title="CPF" type="text" placeholder="Digite seu nome"/>
-
-              <Input name="birth" title="Data de nascimento" type="date" placeholder="Digite seu nome"/>
-
-              <Input name="gender" title="Genero" type="text" placeholder="Digite seu nome"/>
+              <Input name="cpf" title="CPF" type="text" placeholder="Digite seu CPF" max="11" min="11"/>
 
               <Input name="email" title="E-mail" type="email" placeholder="Digite seu e-mail"/>
+
+              <Row>
+                <Col>
+                  <Input name="birth" title="Data de nascimento" type="date"/>
+                </Col>
+                <Col>
+                  <Select name="gender" title="Gênero" options={[
+                    { value: 'M', label: 'Masculino' },
+                    { value: 'F', label: 'Femino' },
+                  ]}/>
+                </Col>
+              </Row>
 
               <Row>
                 <Col>
@@ -93,8 +114,6 @@ const AddStudent: React.FC = () => {
                 </Col>
               </Row>
 
-
-
               <Button variant="primary" type="submit">
                 Adicionar
               </Button>
@@ -103,9 +122,8 @@ const AddStudent: React.FC = () => {
           </Col>
         </Row>
       </Container>
-
     </>
   );
-}
+};
 
 export default AddStudent;

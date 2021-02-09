@@ -1,0 +1,11 @@
+
+
+.col-actions {
+  min-width: 100px;
+  text-align: center;
+}
+@media (min-width: 768px) {
+  .col-actions {
+    width: 200px;
+  }
+}

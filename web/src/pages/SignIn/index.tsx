@@ -6,7 +6,7 @@ import { Form as UnForm } from '@unform/web';
 import * as Yup from 'yup';
 import { useAuth } from '../../context/AuthContext';
 
-import Input from '../../components/Input';
+import Input from '../../components/Form/Input';
 import getValidationErrors from '../../Utils/getValidationErrors';
 
 interface ISignInFormData {

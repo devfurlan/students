@@ -17,7 +17,7 @@ const Title: React.FC<IProps> = ({ name, button = false }) => {
 
         {button && (
           <Col className="d-flex justify-content-end align-items-center">
-            <Button href="/students/add" variant="success" size="sm"><FaPlus/> Adicionar</Button>
+            <Button href="/student/add" variant="success" size="sm"><FaPlus/> Adicionar</Button>
           </Col>
         )}
 
