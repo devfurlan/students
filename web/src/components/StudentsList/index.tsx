@@ -1,10 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Container, Table, Button } from 'react-bootstrap';
 import { FaEdit, FaTrash } from 'react-icons/fa';
+import { useHistory } from 'react-router-dom';
 import api from '../../services/api';
 
 import './index.css';
-import { useHistory } from 'react-router-dom';
 
 interface IStudents {
   id: number;
